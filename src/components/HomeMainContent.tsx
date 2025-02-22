@@ -5,7 +5,7 @@ import ReactCodeMirror from "@uiw/react-codemirror"
 import {EditorView} from "@codemirror/view"
 import {getLanguageExtension, languageOptions} from "@local/hooks/codeHighlitghting.ts"
 import {useNavigate} from "react-router-dom"
-import {InfoIcon} from "@primer/octicons-react";
+import {InfoIcon} from "@primer/octicons-react"
 
 const MAX_SIZE_MB = 1
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
@@ -20,44 +20,59 @@ export function HomeMainContent() {
   const {colorScheme} = useMantineColorScheme()
   const [name, setName] = useState<string | null>(null)
   const [pasteValue, setPasteValue] = useState<string>('')
-  const [language, setLanguage] = useState<string>('')
+  const [language, setLanguage] = useState<string>('plaintext')
   const navigate = useNavigate()
 
   async function sendPaste() {
-    const token = await window.grecaptcha.execute(`${import.meta.env.VITE_RECAPTCHA_SITE_KEY}`)
+    try {
+        // Use ready() as a callback
+        const token = await new Promise((resolve, reject) => {
+            window.grecaptcha.ready(async () => {
+                try {
+                    const token = await window.grecaptcha.execute(
+                        '6Lc2kt8qAAAAAPkH_NEseMoH2pRVOfwShCABIJcU',
+                        {action: 'submit'}
+                    );
+                    resolve(token);
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        });
 
-    const pasteSize = new Blob([pasteValue]).size
+        // console.log(token)
 
-    if (pasteSize > MAX_SIZE_BYTES) {
-      alert(`Your paste is too large (${MAX_SIZE_BYTES / 1024 / 1024}MB)\nMaximum size is ${MAX_SIZE_MB}MB`)
-      return
-    }
+        const pasteSize = new Blob([pasteValue]).size;
+        if (pasteSize > MAX_SIZE_BYTES) {
+            alert(`Your paste is too large (${MAX_SIZE_BYTES / 1024 / 1024}MB)\nMaximum size is ${MAX_SIZE_MB}MB`);
+            return;
+        }
 
-    api.post('/pastes/paste', {
-      name: name,
-      paste: pasteValue,
-      language: language,
-      recaptchaToken: token,
-    })
-      .then((response) => {
+        // console.log("Sending data:", {
+        //   name: name,
+        //   paste: pasteValue,
+        //   language: language,
+        //   recaptchaToken: token,
+        // });
+
+        const response = await api.post('/pastes/paste', {
+            name: name,
+            paste: pasteValue,
+            language: language,
+            recaptchaToken: token,
+        });
+
         if (response.status === 200) {
-          setPasteValue('')
-          navigate(response.data.shortId)
-        } else if (response.status === 429) {
-          alert(`${response.data.message}`)
-        } else if (response.status === 500) {
-          alert(`${response.data.message}`)
+          // console.log('200')
+            setPasteValue('');
+            navigate(response.data.shortId);
         } else {
-          alert(`${response.data.message}`)
+            alert(response.data.message || 'An error occurred');
         }
-      })
-      .catch((error) => {
-        if (error.response) {
-          alert(error.response.data)
-        } else {
-          alert('An error occurred')
-        }
-      })
+    } catch (error) {
+        console.error("Error:", error);
+        alert('An error occurred');
+    }
   }
 
   return (

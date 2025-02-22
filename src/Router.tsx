@@ -1,6 +1,8 @@
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-import {HomePage} from "@local/pages/Home.page.tsx"
-import {PastePage} from "@local/pages/Paste.page.tsx"
+import { lazy } from 'react'
+
+const HomePage = lazy(() => import("@local/pages/Home.page.tsx"))
+const PastePage = lazy(() => import("@local/pages/Paste.page.tsx"))
 
 const router = createBrowserRouter([
   {

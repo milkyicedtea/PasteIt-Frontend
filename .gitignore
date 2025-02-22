@@ -3,3 +3,7 @@
 /.yarn
 /.idea
 .env
+
+*.tsbuildinfo
+vite.config.js
+*.d.ts
