@@ -38,11 +38,11 @@ export function PasteMainContent() {
         {paste ? (
           <>
             <Container
-              style={{ display: "flex", flexDirection: "column", height: '80%', paddingTop: '4%'}}
+              style={{ display: "flex", flexDirection: "column", height: '80%', paddingTop: '3%'}}
             >
               <Text
                 gradient={{ from: 'orange', to: 'grape', deg: 90 }} variant={'gradient'}
-                fw={400} style={{ paddingTop: '3%', paddingBottom: '2.5%', fontSize: '2rem', textAlign: 'center' }}
+                fw={400} style={{paddingBottom: '2.5%', fontSize: '2rem', textAlign: 'center'}}
                 onClick={() => navigate("/")}
               >
                 PasteIt
@@ -78,7 +78,7 @@ export function PasteMainContent() {
               contentEditable={false}
             />
             <Button
-              style={{width: '9rem', marginTop: '.75rem', marginLeft: '.5rem'}}
+              style={{width: '9rem', marginTop: '.75rem', marginLeft: '.5rem', marginBottom: '4rem'}}
               variant={'light'}
               fw={400}
               onClick={() => navigate("/")}
