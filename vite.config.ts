@@ -18,7 +18,7 @@ export default defineConfig({
     svgr(),
     visualizer(),
     compression({
-      algorithm: 'brotliCompress',
+      algorithm: 'gzip',
       exclude: [/\.(br)$/, /\.(gz)$/]
     })
   ],
