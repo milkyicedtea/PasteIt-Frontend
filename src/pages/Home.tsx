@@ -1,21 +1,19 @@
-import {AppShell, Button, Container, Select, Text, TextInput, useMantineColorScheme} from "@mantine/core"
+import {AppShell, Button, Container, Select, Text, TextInput} from "@mantine/core"
 import {Footer} from "@local/components/Footer.tsx"
 import {Header} from "@local/components/Header.tsx"
-import {getLanguageExtension, languageOptions} from "@local/hooks/codeHighlitghting.ts";
+import {languageOptions} from "@local/hooks/codeHighlitghting.ts";
 import {InfoIcon} from "@primer/octicons-react";
-import ReactCodeMirror from "@uiw/react-codemirror";
-import {EditorView} from "@codemirror/view";
-import {useState} from "react";
+import {lazy, useState} from "react";
 import {useNavigate} from "@tanstack/react-router";
 import {api} from "@local/hooks/api.ts";
+import {getRecaptchaToken} from "@local/hooks/recaptcha.ts";
+
+const CodeEditor = lazy(() => import("@local/components/CodeEditor.tsx"))
 
 const MAX_SIZE_MB = 1
 const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024
 
-declare const grecaptcha: any
-
 export default function Home() {
-  const {colorScheme} = useMantineColorScheme()
   const [name, setName] = useState<string | null>(null)
   const [pasteValue, setPasteValue] = useState<string>('')
   const [language, setLanguage] = useState<string>('plaintext')
@@ -23,19 +21,7 @@ export default function Home() {
 
   async function sendPaste() {
     try {
-        const token = await new Promise((resolve, reject) => {
-            grecaptcha.enterprise.ready(async () => {
-                try {
-                    const token = await grecaptcha.enterprise.execute(
-                        '6Lc2kt8qAAAAAPkH_NEseMoH2pRVOfwShCABIJcU',
-                        {action: 'LOGIN'}
-                    );
-                    resolve(token);
-                } catch (err) {
-                    reject(err);
-                }
-            });
-        });
+        const token = await getRecaptchaToken("LOGIN")
 
         const pasteSize = new Blob([pasteValue]).size;
         if (pasteSize > MAX_SIZE_BYTES) {
@@ -56,9 +42,10 @@ export default function Home() {
         } else {
             alert(response.data.message || 'An error occurred');
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert('An error occurred');
+    } catch (err) {
+      console.error("reCAPTCHA failed:", err)
+      alert("Failed to verify you're human. Please try again.")
+      return
     }
   }
 
@@ -105,9 +92,9 @@ export default function Home() {
             </div>
           </Container>
 
-
-          <ReactCodeMirror
+          <CodeEditor
             value={pasteValue}
+            language={language}
             onChange={(e) => setPasteValue(e)}
             height={"25.75rem"}
             placeholder="PasteIt here..."
@@ -119,14 +106,6 @@ export default function Home() {
               bracketMatching: true,
               indentOnInput: true
             }}
-            theme={colorScheme ? "dark" : "light"}
-            style={{
-              fontFamily: "Consolas, Monaco, Lucida Console, Liberation Mono, Courier New",
-            }}
-            extensions={[
-              EditorView.lineWrapping,
-              getLanguageExtension(language),
-            ]}
           />
 
           <Text style={{marginTop: '1rem'}}>Paste Name:</Text>

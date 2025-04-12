@@ -7,3 +7,5 @@
 *.tsbuildinfo
 vite.config.js
 *.d.ts
+
+stats.html
