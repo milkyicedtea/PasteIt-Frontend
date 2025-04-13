@@ -7,6 +7,7 @@ import {lazy, useState} from "react";
 import {useNavigate} from "@tanstack/react-router";
 import {api} from "@local/hooks/api.ts";
 import {getRecaptchaToken} from "@local/hooks/recaptcha.ts";
+import '@mantine/core/styles.css'
 
 const CodeEditor = lazy(() => import("@local/components/CodeEditor.tsx"))
 
@@ -89,6 +90,7 @@ export default function Home() {
               {/*@ts-expect-error - style not getting detected but gets picked up..*/}
               <InfoIcon style={{color: "#54aeff"}}/>
               <Text>PasteIt snippets are currently limited to 1MB each, and users are rate limited to 5 snippets per day :)</Text>
+
             </div>
           </Container>
 

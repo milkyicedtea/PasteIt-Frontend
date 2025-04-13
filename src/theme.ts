@@ -1,5 +1,5 @@
 import { createTheme } from '@mantine/core'
-import "@fontsource/varela-round"
+import "@fontsource/varela-round/latin"
 
 export const theme = createTheme({
   fontFamily: "Varela Round",

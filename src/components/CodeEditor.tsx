@@ -43,7 +43,15 @@ function CodeEditor({ value, onChange, editable = true, language, height, placeh
       editable={editable}
       basicSetup={basicSetup}
       placeholder={placeholder}
-      theme={colorScheme ? "dark" : "light"}
+      theme={
+        colorScheme === "dark"
+          ? "dark"
+        : colorScheme === "light"
+          ? "light"
+        : window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
+      }
       style={{
         fontFamily: "Consolas, Monaco, Lucida Console, Liberation Mono, Courier New",
       }}

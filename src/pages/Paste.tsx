@@ -6,6 +6,7 @@ import {lazy, useEffect, useState} from "react"
 import {api} from "@local/hooks/api.ts"
 import {Button, Container, Text} from "@mantine/core"
 import {getLanguageLabel} from "@local/hooks/codeHighlitghting.ts"
+import '@mantine/core/styles.css'
 
 const CodeEditor = lazy(() => import("@local/components/CodeEditor.tsx"))
 

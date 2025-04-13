@@ -1,5 +1,3 @@
-import '@mantine/core/styles.css'
-
 import {AppShell, MantineProvider} from '@mantine/core'
 import {theme} from "./theme.ts"
 
